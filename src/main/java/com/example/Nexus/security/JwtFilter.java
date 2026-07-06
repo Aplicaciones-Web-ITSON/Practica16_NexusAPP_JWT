@@ -108,6 +108,18 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain chain)
             throws ServletException, IOException {
 
+        // NOTA PARA LOS ALUMNOS: Esto es SOLO para entorno de pruebas/desarrollo.
+        // Se abren los permisos de CORS para que cualquier frontend pueda consumir esta API sin bloqueos.
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+        response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, Origin, X-Requested-With");
+
+        // Si es una petición preflight (OPTIONS), respondemos OK (200) de inmediato sin validar token
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
+
         // ── Paso 1: ¿Es una ruta pública? ──────────────────────────────
         if (isPublicRoute(request)) {
             // Dejamos pasar sin validar nada
